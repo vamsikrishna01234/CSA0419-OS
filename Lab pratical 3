@@ -1,0 +1,61 @@
+#include<stdio.h>
+
+// Structure to store process information
+struct process {
+    int pid;            // process id
+    int burst_time;     // burst time
+    int waiting_time;   // waiting time
+    int turnaround_time;// turnaround time
+};
+
+void swap(struct process *xp, struct process *yp)
+{
+    struct process temp = *xp;
+    *xp = *yp;
+    *yp = temp;
+}
+
+void sort(struct process p[], int n) {
+    int i, j;
+    for (i = 0; i < n-1; i++)
+        for (j = 0; j < n-i-1; j++)
+            if (p[j].burst_time > p[j+1].burst_time)
+                swap(&p[j], &p[j+1]);
+}
+
+void compute_times(struct process p[], int n) {
+    int i;
+    p[0].waiting_time = 0;
+    p[0].turnaround_time = p[0].burst_time;
+    for(i=1;i<n;i++) {
+        p[i].waiting_time = p[i-1].turnaround_time;
+        p[i].turnaround_time = p[i].waiting_time + p[i].burst_time;
+    }
+}
+
+int main() {
+    int i, n=4;
+    float avg_waiting_time=0, avg_turnaround_time=0;
+    struct process p[] = {{1, 6, 0, 0},
+                          {2, 8, 0, 0},
+                          {3, 7, 0, 0},
+                          {4, 3, 0, 0}};
+
+    sort(p, n);                     // Sort processes based on burst time
+    compute_times(p, n);            // Compute waiting and turnaround times
+
+    printf("Process\tBurst Time\tWaiting Time\tTurnaround Time\n");
+    for(i=0;i<n;i++) {
+        printf("P%d\t\t%d\t\t%d\t\t%d\n", p[i].pid, p[i].burst_time, p[i].waiting_time, p[i].turnaround_time);
+        avg_waiting_time += p[i].waiting_time;
+        avg_turnaround_time += p[i].turnaround_time;
+    }
+
+    avg_waiting_time /= n;
+    avg_turnaround_time /= n;
+
+    printf("Average Waiting Time: %.2f\n", avg_waiting_time);
+    printf("Average Turnaround Time: %.2f\n", avg_turnaround_time);
+
+    return 0;
+}
