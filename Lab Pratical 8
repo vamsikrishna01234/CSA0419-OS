@@ -1,0 +1,43 @@
+#include<stdio.h>
+
+int main() {
+    int page_frames = 3;
+    int page_reference[] = {1, 2, 3, 2, 1, 5, 2, 1, 6, 2, 5, 6, 3, 1, 3, 6, 1, 2, 4, 3};
+    int reference_length = sizeof(page_reference) / sizeof(page_reference[0]);
+
+    int page_table[page_frames];
+    int page_faults = 0;
+
+    for (int i = 0; i < page_frames; i++) {
+        page_table[i] = -1;
+    }
+
+    for (int i = 0; i < reference_length; i++) {
+        int page_hit = 0;
+
+        // Check if page is already in page table
+        for (int j = 0; j < page_frames; j++) {
+            if (page_table[j] == page_reference[i]) {
+                page_hit = 1;
+                break;
+            }
+        }
+
+        // If page is not in page table, replace least recently used page
+        if (!page_hit) {
+            int lru_index = 0;
+            for (int j = 1; j < page_frames; j++) {
+                if (page_table[j] < page_table[lru_index]) {
+                    lru_index = j;
+                }
+            }
+
+            page_table[lru_index] = page_reference[i];
+            page_faults++;
+        }
+    }
+
+    printf("Page Faults: %d\n", page_faults);
+
+    return 0;
+}
