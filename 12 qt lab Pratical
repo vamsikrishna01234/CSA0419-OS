@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Block {
+    int size;
+    int allocated;
+};
+
+void bestFit(struct Block* memory, int numBlocks, int* processes, int numProcesses) {
+    for (int i = 0; i < numProcesses; i++) {
+        int bestFitIndex = -1;
+        for (int j = 0; j < numBlocks; j++) {
+            if (memory[j].size >= processes[i] && memory[j].allocated == 0) {
+                if (bestFitIndex == -1 || memory[j].size < memory[bestFitIndex].size) {
+                    bestFitIndex = j;
+                }
+            }
+        }
+        
+        if (bestFitIndex != -1) {
+            memory[bestFitIndex].allocated = 1;
+            printf("Process %d allocated to block %d\n", i + 1, bestFitIndex + 1);
+        } else {
+            printf("Process %d cannot be allocated\n", i + 1);
+        }
+    }
+}
+
+int main() {
+    int numBlocks, numProcesses;
+
+    printf("Enter the number of memory blocks: ");
+    scanf("%d", &numBlocks);
+
+    struct Block* memory = (struct Block*)malloc(numBlocks * sizeof(struct Block));
+
+    printf("Enter the size of each memory block:\n");
+    for (int i = 0; i < numBlocks; i++) {
+        scanf("%d", &memory[i].size);
+        memory[i].allocated = 0;
+    }
+
+    printf("Enter the number of processes: ");
+    scanf("%d", &numProcesses);
+
+    int* processes = (int*)malloc(numProcesses * sizeof(int));
+
+    printf("Enter the size of each process:\n");
+    for (int i = 0; i < numProcesses; i++) {
+        scanf("%d", &processes[i]);
+    }
+
+    printf("Memory allocation using Best Fit algorithm:\n");
+    bestFit(memory, numBlocks, processes, numProcesses);
+
+    free(memory);
+    free(processes);
+
+    return 0;
+}
