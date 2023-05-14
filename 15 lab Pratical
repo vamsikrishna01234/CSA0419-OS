@@ -1,0 +1,26 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+int main() {
+    int n = 9;
+    int tracks[] = {55, 58, 60, 70, 18, 90, 150, 160, 184};  // Track positions
+
+    int headPosition;
+    printf("Enter the initial head position: ");
+    scanf("%d", &headPosition);
+
+    int totalHeadMovement = 0;
+
+    for (int i = 0; i < n; i++) {
+        int distance = abs(tracks[i] - headPosition);
+        totalHeadMovement += distance;
+        headPosition = tracks[i];
+    }
+
+    float averageHeadMovement = (float)totalHeadMovement / n;
+
+    printf("Average head movement: %.2f\n", averageHeadMovement);
+
+    return 0;
+}
